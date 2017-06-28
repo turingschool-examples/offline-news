@@ -15,6 +15,9 @@
     "dexie": "^1.5.1",
     "express": "^4.15.3"
   },
+  "engines": {
+    "node": "6.4.0"
+  },
   "devDependencies": {
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
