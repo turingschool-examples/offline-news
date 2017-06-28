@@ -3,8 +3,8 @@ const app = express();
 const bodyParser = require('body-parser');
 
 const requireHTTPS = (req, res, next) => {
-  if (!req.secure) {
-    console.log('is NOT secure: ', req);
+  if (req.headers['x-forwarded-proto'] != 'https') {
+    console.log('is NOT secure');
       //FYI this should work for local development as well
       return res.redirect('https://' + req.get('host') + req.url);
   }
