@@ -4,9 +4,11 @@ const bodyParser = require('body-parser');
 
 const requireHTTPS = (req, res, next) => {
   if (!req.secure) {
+    console.log('is NOT secure: ', req);
       //FYI this should work for local development as well
       return res.redirect('https://' + req.get('host') + req.url);
   }
+  console.log('IS secure');
   next();
 };
 
