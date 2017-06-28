@@ -14,6 +14,7 @@ const requireHTTPS = (req, res, next) => {
 
 app.set('port', process.env.PORT || 3000);
 
+app.use(requireHTTPS);
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,11 +28,11 @@ app.get('/', (request, response) => {
   response.sendFile('index.html')
 });
 
-app.get('/api/v1/articles', requireHTTPS, (request, response) => {
+app.get('/api/v1/articles', (request, response) => {
   response.status(200).json(app.locals.articles);
 });
 
-app.post('/api/v1/articles', requireHTTPS, (request, response) => {
+app.post('/api/v1/articles', (request, response) => {
   app.locals.articles.push(request.body);
   response.status(201).json(app.locals.articles);
 });
