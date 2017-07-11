@@ -72,9 +72,22 @@
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__indexedDB__ = __webpack_require__(1);
+
+
 const fetchLatestHeadlines = () => {
   fetch('/api/v1/articles').then(response => response.json()).then(articles => appendArticles(articles)).catch(error => console.log('error: ', error));
 };
+
+// Add event listeners on the window for
+// when a user comes online & offline
+// A. When the user is online:
+//     1. update the text in the connection-status <p> to say 'online'
+//     2. fetch headlines from the server
+// B. When a user is offline:
+//     1. update the text in the connection-status <p> to say 'offline'
+//     2. add an 'offline' class to the connection-status <p>
+//     3. display only the articles from indexedDB
 
 const appendArticles = articles => {
   $('#latest-headlines').html('');
@@ -122,6 +135,46 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+throw new Error("Cannot find module \"dexie\"");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__main_js__ = __webpack_require__(0);
+
+
+
+let db = new __WEBPACK_IMPORTED_MODULE_0_dexie___default.a('fakeNews');
+
+db.version(1).stores({
+  articles: 'id, headline, byline'
+});
+
+const saveOfflineArticle = article => {
+  // save article to IndexedDB
+};
+/* unused harmony export saveOfflineArticle */
+
+
+const checkOfflineAvailability = id => {
+  // get article from IndexedDB
+};
+/* unused harmony export checkOfflineAvailability */
+
+
+const removeOfflineArticle = id => {
+  // remove article from IndexedDB
+};
+/* unused harmony export removeOfflineArticle */
+
+
+const loadOfflineArticles = () => {
+  db.articles.toArray().then(articles => __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__main_js__["appendArticles"])(articles)).catch(error => console.log('error: ', error));
+};
+/* unused harmony export loadOfflineArticles */
+
 
 /***/ })
 /******/ ]);

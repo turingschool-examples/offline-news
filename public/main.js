@@ -1,9 +1,25 @@
+import { 
+  loadOfflineArticles,
+  checkOfflineAvailability,
+  saveOfflineArticle,
+  removeOfflineArticle } from './indexedDB';
+
 const fetchLatestHeadlines = () => {
   fetch('/api/v1/articles')
   .then(response => response.json())
   .then(articles => appendArticles(articles))
   .catch(error => console.log('error: ', error));
 };
+
+// Add event listeners on the window for
+// when a user comes online & offline
+// A. When the user is online:
+//     1. update the text in the connection-status <p> to say 'online'
+//     2. fetch headlines from the server
+// B. When a user is offline:
+//     1. update the text in the connection-status <p> to say 'offline'
+//     2. add an 'offline' class to the connection-status <p>
+//     3. display only the articles from indexedDB
 
 export const appendArticles = (articles) => {
   $('#latest-headlines').html('');
