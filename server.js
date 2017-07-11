@@ -1,21 +1,14 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const cors = require('express-cors');
 const fs = require('fs');
 const path = require('path');
 
 app.set('port', process.env.PORT || 3000);
 
-app.use(cors({
-    allowedOrigins: ['localhost:8000']
-}));
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
-
-app.options('/api/v1/news');
 
 app.get('/', (request, response) => {
   response.sendFile('index.html');
