@@ -5,10 +5,6 @@ const cors = require('express-cors');
 const fs = require('fs');
 const path = require('path');
 
-const environment = process.env.NODE_ENV || 'development';
-const configuration = require('./knexfile')[environment];
-const database = require('knex')(configuration);
-
 app.set('port', process.env.PORT || 3000);
 
 app.use(cors({
@@ -17,14 +13,12 @@ app.use(cors({
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
 
 app.options('/api/v1/news');
 
 app.get('/', (request, response) => {
-  fs.readFile(`${__dirname}/index.html`, (error, file) => {
-    response.send(file)
-  });
+  response.sendFile('index.html');
 });
 
 app.get('/api/v1/news', (request, response) => {
@@ -59,6 +53,6 @@ app.post('/api/v1/news', (request, response) => {
     });
 });
 
-app.listen(app.get('port'));
+app.listen(app.get('port'), () => { console.log(`App running on port ${app.get('port')}`) });
 
 module.exports = app;
