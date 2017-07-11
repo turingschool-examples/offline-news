@@ -19,3 +19,17 @@ self.addEventListener('fetch', event => {
     })
   );
 });
+
+self.addEventListener('activate', function(event) {
+  let cacheWhitelist = ['assets-v1'];
+
+  event.waitUntil(
+    caches.keys().then(function(keyList) {
+      return Promise.all(keyList.map(function(key) {
+        if (cacheWhitelist.indexOf(key) === -1) {
+          return caches.delete(key);
+        }
+      }));
+    })
+  );
+});
