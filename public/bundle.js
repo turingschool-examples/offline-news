@@ -73,6 +73,8 @@
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__indexedDB__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__sendMessage__ = __webpack_require__(3);
+
 
 
 const fetchLatestHeadlines = () => {
@@ -155,18 +157,32 @@ $('#latest-headlines').on('click', 'p', function (event) {
   elem.classList.toggle('starred');
 });
 
-if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator && 'SyncManager' in window && 'Notification' in window) {
   window.addEventListener('load', () => {
     fetchLatestHeadlines();
-    navigator.serviceWorker.register('./service-worker.js').then(registration => {
-      // Registration was successful
-      console.log('ServiceWorker registration successful');
+    navigator.serviceWorker.register('./service-worker.js').then(registration => navigator.serviceWorker.ready).then(registration => {
+      Notification.requestPermission();
+      $('#submit-article').on('click', function (event) {
+        let headline = $('#headline-input').val();
+        let byline = $('#byline-input').val();
+
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__sendMessage__["a" /* sendMessage */])({
+          type: 'add-article',
+          article: { headline, byline, id: Math.random() }
+        });
+      });
     }).catch(err => {
       // registration failed :(
       console.log(`ServiceWorker registration failed: ${err}`);
     });
   });
 }
+
+navigator.serviceWorker.addEventListener('message', function (event) {
+  if (event.data.articles) {
+    appendArticles(event.data.articles);
+  }
+});
 
 /***/ }),
 /* 1 */
@@ -200,7 +216,7 @@ module.exports = g;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_dexie__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_dexie__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_dexie___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_dexie__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__main_js__ = __webpack_require__(0);
 
@@ -238,6 +254,36 @@ const loadOfflineArticles = () => {
 
 /***/ }),
 /* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const sendMessage = message => {
+  // This wraps the message posting/response in a promise, which will resolve if the response doesn't
+  // contain an error, and reject with the error if it does. If you'd prefer, it's possible to call
+  // controller.postMessage() and set up the onmessage handler independently of a promise, but this is
+  // a convenient wrapper.
+  return new Promise(function (resolve, reject) {
+    var messageChannel = new MessageChannel();
+    messageChannel.port1.onmessage = function (event) {
+      if (event.data.error) {
+        reject(event.data.error);
+      } else {
+        resolve(event.data);
+      }
+    };
+
+    // This sends the message data as well as transferring messageChannel.port2 to the service worker.
+    // The service worker can then use the transferred port to reply via postMessage(), which
+    // will in turn trigger the onmessage handler on messageChannel.port1.
+    // See https://html.spec.whatwg.org/multipage/workers.html#dom-worker-postmessage
+    navigator.serviceWorker.controller.postMessage(message, [messageChannel.port2]);
+  });
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = sendMessage;
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, setImmediate) {(function (global, factory) {
@@ -4845,10 +4891,10 @@ return Dexie;
 })));
 //# sourceMappingURL=dexie.js.map
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(6).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(7).setImmediate))
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -5038,7 +5084,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -5228,10 +5274,10 @@ process.umask = function() { return 0; };
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(5)))
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -5284,7 +5330,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(5);
+__webpack_require__(6);
 exports.setImmediate = setImmediate;
 exports.clearImmediate = clearImmediate;
 
