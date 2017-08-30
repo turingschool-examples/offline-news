@@ -51,6 +51,8 @@ $('#latest-headlines').on('click', 'p', function(event) {
   let byline = elem.nextSibling.innerText;
 
   elem.classList.toggle('starred');
+
+  // Add or remove article from IndexedDB
 });
 
 if ('serviceWorker' in navigator) {
@@ -58,10 +60,8 @@ if ('serviceWorker' in navigator) {
     fetchLatestHeadlines();
     navigator.serviceWorker.register('./service-worker.js')
       .then(registration => {
-        // Registration was successful
         console.log('ServiceWorker registration successful');
       }).catch(err => {
-        // registration failed :(
         console.log(`ServiceWorker registration failed: ${err}`);
       });
   });
