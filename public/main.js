@@ -32,6 +32,9 @@ export const appendArticles = (articles) => {
     headline.innerText = article.headline;
     headline.dataset.articleId = article.id;
 
+    // Check if the current article exists in IndexedDB,
+    // if it does, add the 'starred' class to the headline
+
     let byline = document.createElement('span');
     byline.innerText = article.byline;
 
