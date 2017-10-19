@@ -46,15 +46,15 @@ export const appendArticles = (articles) => {
 
   articles.forEach(article => {
     let articleElem = document.createElement('li');
-    
-    checkOfflineAvailability(article.id)
-    .then(article => {
-      if (article) { articleElem.classList.add('starred'); }
-    })
 
     let headline = document.createElement('p');
     headline.innerText = article.headline;
     headline.dataset.articleId = article.id;
+
+    checkOfflineAvailability(article.id)
+    .then(article => {
+      if (article) { headline.classList.add('starred'); }
+    })
 
     let byline = document.createElement('span');
     byline.innerText = article.byline;

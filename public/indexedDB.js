@@ -12,7 +12,6 @@ export const saveOfflineArticle = (article) => {
 }
 
 export const checkOfflineAvailability = (id) => {
-  console.log('id: ', id);
   return db.articles.get(id.toString())
 }
 
@@ -26,6 +25,6 @@ export const loadOfflineArticles = () => {
     appendArticles(articles);
   })
   .catch(error => {
-    console.log('error: ', error);
+    console.log({ error });
   })
 };
