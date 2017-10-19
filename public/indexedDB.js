@@ -26,5 +26,5 @@ export const removeOfflineArticle = (id) => {
 export const loadOfflineArticles = () => {
   db.articles.toArray()
   .then(articles => appendArticles(articles))
-  .catch(error => console.log({ error });
+  .catch(error => console.log({ error }));
 }; 
